@@ -1,4 +1,4 @@
-/
+/asadatik.dev
 ├── /core                           # All code-related assets (Applications, Shared code, Configs, Tools)
 │   ├── /applications               # All the apps and services (web, mobile, etc.)
 │   │   ├── /web                    # Web app (e.g., React, Angular, Next.js)
@@ -19,3 +19,4 @@
 │   │   └── /api-interfaces         # Shared API interfaces (e.g., GraphQL, REST)
 │   ├── /config                     # Centralized configuration for the whole repo
 │   ├── /tools                      # CI/CD, build tools, and scripts
+│   ├── /technologies               # Projects like OS, compilers, databases, etc.
