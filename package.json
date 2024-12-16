@@ -1,0 +1,9 @@
+{
+  "name": "mrasadatik",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "workspaces": [
+    "core/portfolio/applications/web/*"
+  ]
+}
