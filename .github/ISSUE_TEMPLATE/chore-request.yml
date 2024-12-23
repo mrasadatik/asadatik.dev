@@ -1,0 +1,63 @@
+name: "Chore Request"
+description: "Use this template to propose minor tasks or maintenance work in the portfolio repository."
+title: "chore: <brief description>"
+labels: ["chore"]
+assignees:
+  - "mrasadatik"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Provide a detailed description of the chore you are proposing. Specify the nature of the task and its relevance to maintaining or improving the repository."
+    validations:
+      required: false
+  - type: textarea
+    id: reason_for_request
+    attributes:
+      label: "Reason for Request"
+      description: "Explain why this chore is necessary. How will it benefit the portfolio repository, enhance organization, or improve workflow and maintenance?"
+    validations:
+      required: false
+  - type: textarea
+    id: suggested_actions
+    attributes:
+      label: "Suggested Actions"
+      description: "Outline the specific actions you recommend for completing this chore. Include any steps, tools, or considerations that may be relevant."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: "Include any other pertinent information, such as links to related tasks, project guidelines, or previous discussions that support your request."
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Before submitting your chore request, please ensure you have:"
+      options:
+        - label: "Verified the relevance of this task to the portfolio repository."
+        - label: "Searched the Issues tab to ensure this chore hasn't already been requested."
+        - label: "Ensured the task aligns with the repository's goals and maintenance standards."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact
+        This repository is owned and maintained by **Md Asaduzzaman Atik**. If you have any questions or need further assistance, please reach out via:
+        - **Casual Conversations:**  
+          **Email:** [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)  
+          For informal discussions, brainstorming, or sharing ideas.
+        - **Professional Conversations & Networking:**  
+          **Email:** [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)  
+          For business discussions, networking, or professional opportunities.
+        - **Career Development & Collaboration:**  
+          **Email:** [flow@mr.asadatik.dev](mailto:flow@mr.asadatik.dev)  
+          To discuss career paths, collaboration opportunities, or new projects.
+        - **Support & Troubleshooting:**  
+          **Email:** [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)  
+          For project-related issues or technical support inquiries — I'm here to assist.

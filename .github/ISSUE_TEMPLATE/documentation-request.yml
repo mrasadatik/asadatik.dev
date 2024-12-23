@@ -1,0 +1,63 @@
+name: "Documentation Request"
+description: "Use this template to suggest improvements or additions to the documentation in the portfolio repository."
+title: "documentation: <brief description>"
+labels: ["documentation", "docs"]
+assignees:
+  - "mrasadatik"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Provide a detailed description of the documentation change you are proposing. Specify the affected section or content and describe the nature of the changes."
+    validations:
+      required: false
+  - type: textarea
+    id: reason_for_request
+    attributes:
+      label: "Reason for Request"
+      description: "Explain why this documentation improvement is necessary. How will it enhance clarity, usability, or understanding for users or contributors?"
+    validations:
+      required: false
+  - type: textarea
+    id: suggested_changes
+    attributes:
+      label: "Suggested Changes"
+      description: "Outline the specific changes you recommend, such as new content, modifications to existing text, or formatting improvements. If possible, provide examples or references to similar documentation for inspiration."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: "Include any other relevant information, such as links to external resources, related tasks, or examples, that might assist in addressing your request."
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Before submitting your documentation request, please ensure you have:"
+      options:
+        - label: "Verified that the suggested changes align with the repository's goals."
+        - label: "Searched the Issues tab to ensure this request hasn't already been made."
+        - label: "Reviewed the repository's current documentation for consistency."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact
+        This repository is owned and maintained by **Md Asaduzzaman Atik**. If you have any questions or need further assistance, please reach out via:
+        - **Casual Conversations:**  
+          **Email:** [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)  
+          For informal discussions, brainstorming, or sharing ideas.
+        - **Professional Conversations & Networking:**  
+          **Email:** [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)  
+          For business discussions, networking, or professional opportunities.
+        - **Career Development & Collaboration:**  
+          **Email:** [flow@mr.asadatik.dev](mailto:flow@mr.asadatik.dev)  
+          To discuss career paths, collaboration opportunities, or new projects.
+        - **Support & Troubleshooting:**  
+          **Email:** [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)  
+          For project-related issues or technical support inquiries — I'm here to assist.
