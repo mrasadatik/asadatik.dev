@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Dojo LoM Contributors Channel (Slack)
+    url: https://app.slack.com/client/T0821V5N5F0/C0825NS0S21
+    about: A space for contributors to discuss development, share ideas, and collaborate on Dojo LoM projects.
+  - name: Dojo LoM Contributors (Front-End) Channel (Slack)
+    url: https://app.slack.com/client/T0821V5N5F0/C082B3VPB36
+    about: A dedicated space for front-end developers to discuss UI/UX design, front-end technologies, and collaborate on front-end development for Dojo LoM projects.
+  - name: Dojo LoM Contributors (Back-End) Channel (Slack)
+    url: https://app.slack.com/client/T0821V5N5F0/C082206FQMU
+    about: A dedicated space for back-end developers to discuss server-side technologies, APIs, and collaborate on back-end development for Dojo LoM projects.
+  - name: Dojo LoM Security Channel (Slack)
+    url: https://app.slack.com/client/T0821V5N5F0/C0828LDJPA6
+    about: A space for security experts and contributors to discuss security best practices, identify vulnerabilities, and collaborate on security features for Dojo LoM projects.
+  - name: Dojo LoM Support Channel (Slack)
+    url: https://app.slack.com/client/T0821V5N5F0/C0825SU3B29
+    about: A dedicated channel for providing and receiving support regarding Dojo LoM initiatives and technical issues.
