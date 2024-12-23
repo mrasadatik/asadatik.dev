@@ -1,0 +1,52 @@
+name: "Question Submission"
+description: "Use this template to ask questions or seek clarification about the portfolio repository."
+title: "question: <brief description>"
+labels: ["question"]
+assignees:
+  - "mrasadatik"
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: "Please provide a clear and concise description of your question. Specify the context or area of the repository your inquiry relates to."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: |
+        Include any relevant information that may help in answering your question, such as:
+        - References to documentation or related discussions.
+        - Steps or attempts you have made to resolve your question.
+      render: markdown
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Before submitting your question, please ensure you have:"
+      options:
+        - label: "Checked the Issues tab to see if this question has already been asked."
+        - label: "Reviewed the repository's documentation and guidelines for potential answers."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact
+        This repository is owned and maintained by **Md Asaduzzaman Atik**. If you have any questions or need further assistance, please reach out via:
+        - **Casual Conversations:**  
+          **Email:** [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)  
+          For informal discussions, brainstorming, or sharing ideas.
+        - **Professional Conversations & Networking:**  
+          **Email:** [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)  
+          For business discussions, networking, or professional opportunities.
+        - **Career Development & Collaboration:**  
+          **Email:** [flow@mr.asadatik.dev](mailto:flow@mr.asadatik.dev)  
+          To discuss career paths, collaboration opportunities, or new projects.
+        - **Support & Troubleshooting:**  
+          **Email:** [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)  
+          For project-related issues or technical support inquiries — I'm here to assist.

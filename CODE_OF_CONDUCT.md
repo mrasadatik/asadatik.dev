@@ -12,21 +12,21 @@ By engaging with this portfolio, my website, or any platform I have created, you
 
 To maintain a positive experience within my community and for those interacting with my work, I encourage the following behaviors:
 
-- **Be Respectful**: Show consideration for others’ time, perspectives, and experiences. Recognize that we all contribute to the learning process.
-- **Practice Empathy**: Approach others with kindness, understanding, and an open mind.
-- **Provide Constructive Feedback**: Offer insights aimed at improvement and growth, and accept feedback graciously.
-- **Focus on Professionalism**: Every interaction should reflect high professional standards, regardless of the context. Your tone, approach, and actions should align with my commitment to excellence.
-- **Promote Healthy Communication**: Strive to engage in clear, respectful, and solution-focused discussions. Misunderstandings can be resolved calmly and constructively.
+-   **Be Respectful**: Show consideration for others' time, perspectives, and experiences. Recognize that we all contribute to the learning process.
+-   **Practice Empathy**: Approach others with kindness, understanding, and an open mind.
+-   **Provide Constructive Feedback**: Offer insights aimed at improvement and growth, and accept feedback graciously.
+-   **Focus on Professionalism**: Every interaction should reflect high professional standards, regardless of the context. Your tone, approach, and actions should align with my commitment to excellence.
+-   **Promote Healthy Communication**: Strive to engage in clear, respectful, and solution-focused discussions. Misunderstandings can be resolved calmly and constructively.
 
 ### **Unacceptable Behavior**
 
 The following behaviors are prohibited and will not be tolerated:
 
-- **Harassment**: Any form of personal, political, or religious attack, trolling, or behavior meant to provoke or hurt others.
-- **Sexualized Language or Imagery**: Any content or behavior that is inappropriate, sexualized, or otherwise unprofessional.
-- **Discrimination**: Any behavior that discriminates against others based on their age, gender, religion, appearance, or background.
-- **Invasion of Privacy**: Sharing others’ personal or private information, such as email addresses, without their explicit consent.
-- **Unprofessional Conduct**: Any actions or communication that do not align with my personal and professional values, including disrespectful behavior or using inappropriate language.
+-   **Harassment**: Any form of personal, political, or religious attack, trolling, or behavior meant to provoke or hurt others.
+-   **Sexualized Language or Imagery**: Any content or behavior that is inappropriate, sexualized, or otherwise unprofessional.
+-   **Discrimination**: Any behavior that discriminates against others based on their age, gender, religion, appearance, or background.
+-   **Invasion of Privacy**: Sharing others' personal or private information, such as email addresses, without their explicit consent.
+-   **Unprofessional Conduct**: Any actions or communication that do not align with my personal and professional values, including disrespectful behavior or using inappropriate language.
 
 ## **Enforcement Responsibilities**
 
@@ -36,7 +36,7 @@ I have the authority to reject or edit any contributions, comments, or interacti
 
 ## **Scope**
 
-This Code of Conduct applies to all interactions related to my personal portfolio and any platform I manage, whether it’s through this repository, my website, or related communication channels. Representation includes any online or offline interaction where you are engaging with my work, including email exchanges or public appearances.
+This Code of Conduct applies to all interactions related to my personal portfolio and any platform I manage, whether it's through this repository, my website, or related communication channels. Representation includes any online or offline interaction where you are engaging with my work, including email exchanges or public appearances.
 
 ## **Reporting Violations**
 
@@ -44,9 +44,9 @@ If you witness or experience behavior that goes against this Code of Conduct, yo
 
 You can reach me at:
 
-- **General Inquiries**: [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)
-- **Professional Opportunities or Concerns**: [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)
-- **Support or Issue Reporting**: [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)
+-   **General Inquiries**: [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)
+-   **Professional Opportunities or Concerns**: [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)
+-   **Support or Issue Reporting**: [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)
 
 I will ensure that any reports are handled promptly, with confidentiality and respect for privacy.
 
@@ -56,17 +56,17 @@ In the case of violations, the following actions may be taken based on the sever
 
 1. **Warning**
 
-   - **Impact**: Minor violations or inappropriate conduct.
-   - **Consequence**: A private, written warning explaining the violation and its consequences. A public apology may be requested.
+    - **Impact**: Minor violations or inappropriate conduct.
+    - **Consequence**: A private, written warning explaining the violation and its consequences. A public apology may be requested.
 
 2. **Temporary Restriction**
 
-   - **Impact**: Moderate violations or a repeated pattern of behavior.
-   - **Consequence**: A temporary ban from interacting with my platforms for a specified period. Continued violations may result in permanent restrictions.
+    - **Impact**: Moderate violations or a repeated pattern of behavior.
+    - **Consequence**: A temporary ban from interacting with my platforms for a specified period. Continued violations may result in permanent restrictions.
 
 3. **Permanent Ban**
-   - **Impact**: Serious or ongoing violations that harm the community or create a toxic environment.
-   - **Consequence**: Permanent removal from any public or private communication related to my platforms.
+    - **Impact**: Serious or ongoing violations that harm the community or create a toxic environment.
+    - **Consequence**: Permanent removal from any public or private communication related to my platforms.
 
 ## **Acknowledgment**
 

@@ -1,0 +1,70 @@
+name: "Enhancement Proposal"
+description: "Use this template to propose an enhancement or improvement for the portfolio repository."
+title: "enhancement: <brief description>"
+labels: ["enhancement"]
+assignees:
+  - "mrasadatik"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Provide a detailed description of the enhancement you are proposing. Explain the reasoning behind it and the benefits it would bring to the repository."
+    validations:
+      required: false
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation"
+      description: "What problem does this enhancement solve? Why is this improvement necessary for the repository?"
+    validations:
+      required: false
+  - type: textarea
+    id: proposed_changes
+    attributes:
+      label: "Proposed Changes"
+      description: "Outline the specific changes or features you propose, including examples, references, or mockups where applicable."
+    validations:
+      required: false
+  - type: textarea
+    id: impact
+    attributes:
+      label: "Impact"
+      description: "Discuss how this enhancement might affect the existing codebase, user experience, or performance."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: "Include any other information that may be helpful for understanding your proposal, such as related tasks, use cases, or potential challenges."
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Before submitting your enhancement proposal, please ensure you have:"
+      options:
+        - label: "Confirmed the enhancement aligns with the goals of the repository."
+        - label: "Checked the Issues tab to ensure a similar enhancement hasn't already been suggested."
+        - label: "Considered potential impacts on existing features or workflows."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact
+        This repository is owned and maintained by **Md Asaduzzaman Atik**. If you have any questions or need further assistance, please reach out via:
+        - **Casual Conversations:**  
+          **Email:** [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)  
+          For informal discussions, brainstorming, or sharing ideas.
+        - **Professional Conversations & Networking:**  
+          **Email:** [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)  
+          For business discussions, networking, or professional opportunities.
+        - **Career Development & Collaboration:**  
+          **Email:** [flow@mr.asadatik.dev](mailto:flow@mr.asadatik.dev)  
+          To discuss career paths, collaboration opportunities, or new projects.
+        - **Support & Troubleshooting:**  
+          **Email:** [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)  
+          For project-related issues or technical support inquiries — I'm here to assist.

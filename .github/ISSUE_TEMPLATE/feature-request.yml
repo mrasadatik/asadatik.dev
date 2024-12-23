@@ -1,0 +1,70 @@
+name: "Feature Request"
+description: "Use this template to propose a new feature or functionality for the portfolio repository."
+title: "feature: <brief description>"
+labels: ["feature", "feat"]
+assignees:
+  - "mrasadatik"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Provide a detailed description of the feature you are requesting. Explain its purpose and how it will enhance the portfolio or benefit its users."
+    validations:
+      required: false
+  - type: textarea
+    id: use_cases
+    attributes:
+      label: "Use Cases"
+      description: "Describe the specific scenarios in which this feature will be useful. How will it improve user experience, functionality, or workflow?"
+    validations:
+      required: false
+  - type: textarea
+    id: proposed_implementation
+    attributes:
+      label: "Proposed Implementation"
+      description: "Outline your vision for implementing this feature. Include any relevant examples, diagrams, or references to clarify your proposal."
+    validations:
+      required: false
+  - type: textarea
+    id: potential_challenges
+    attributes:
+      label: "Potential Challenges"
+      description: "Identify any potential challenges, obstacles, or considerations for implementing this feature effectively."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: "Add any other information that may assist in evaluating your request, such as related issues, discussions, or dependencies."
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Before submitting your feature request, please ensure you have:"
+      options:
+        - label: "Confirmed that the feature aligns with the repository's goals."
+        - label: "Searched the Issues tab to ensure this feature hasn't already been requested."
+        - label: "Reviewed existing features to avoid redundancy."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact
+        This repository is owned and maintained by **Md Asaduzzaman Atik**. If you have any questions or need further assistance, please reach out via:
+        - **Casual Conversations:**  
+          **Email:** [hey@mr.asadatik.dev](mailto:hey@mr.asadatik.dev)  
+          For informal discussions, brainstorming, or sharing ideas.
+        - **Professional Conversations & Networking:**  
+          **Email:** [engage@mr.asadatik.dev](mailto:engage@mr.asadatik.dev)  
+          For business discussions, networking, or professional opportunities.
+        - **Career Development & Collaboration:**  
+          **Email:** [flow@mr.asadatik.dev](mailto:flow@mr.asadatik.dev)  
+          To discuss career paths, collaboration opportunities, or new projects.
+        - **Support & Troubleshooting:**  
+          **Email:** [help@mr.asadatik.dev](mailto:help@mr.asadatik.dev)  
+          For project-related issues or technical support inquiries — I'm here to assist.

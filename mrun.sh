@@ -1,15 +1,12 @@
 #!/bin/bash
 
-# Path to the project mapping file
 PROJECT_MAP_FILE="projects.mrun"
 
-# Default values
 PROJECT_ID=""
 COMMAND=""
 OS_TYPE=""
 ACTION=""
 
-# Function to display usage
 usage() {
     echo -e "\nUsage: $0 -p <project_id> -c \"<command>\""
     echo -e "  -p  \tSpecify the unique project ID"
@@ -19,7 +16,6 @@ usage() {
     exit 1
 }
 
-# Function to show help message
 help_message() {
     echo -e "\nHelp: This script allows you to run commands inside specific project directories."
     echo -e "You can also list, add, remove, or update projects in your mapping file."
@@ -32,21 +28,42 @@ help_message() {
     echo -e "  -a               \tAdd a new project to the mapping file."
     echo -e "  -r               \tRemove a project from the mapping file."
     echo -e "  -u               \tUpdate a project's directory in the mapping file."
-    echo -e "  -v               \tEnable verbose mode."
-    echo -e "  -f               \tForce execution without certain validations."
     echo -e "  -h               \tShow this help message."
     exit 0
 }
 
-# Check if input is empty
+log_message() {
+    MESSAGE="$1"
+    LOG_TO_FILE=$2
+    LOG_TO_CLI=$3
+    NEWLINE=$4
+
+    LOGGING_FILE="mrun.log"
+
+    if [[ $NEWLINE == true ]]; then
+        echo ""
+    fi
+
+    FORMATTED_MESSAGE="[$(date)] - $MESSAGE"
+
+    if [[ "$LOG_TO_CLI" == true ]]; then
+        echo -e "$FORMATTED_MESSAGE"
+    fi
+
+    if [[ "$LOG_TO_FILE" == true ]]; then
+        echo -e "$FORMATTED_MESSAGE" >> "$LOGGING_FILE"
+    fi
+}
+
 check_empty_input() {
-    if [[ -z "$1" ]]; then
-        echo -e "\nError: Input cannot be empty!"
+    USER_INPUT_TO_CHECK="$1"
+
+    if [[ -z "$USER_INPUT_TO_CHECK" ]]; then
+        log_message "Error: Input cannot be empty!" true true false
         exit 1
     fi
 }
 
-# Function to detect the OS type
 detect_os() {
     case "$(uname)" in
         "Darwin")
@@ -64,293 +81,328 @@ detect_os() {
     esac
 }
 
-# Check if jq is installed
 check_dependencies() {
+    DETECTED_OS_TYPE="$1"
+
     if ! command -v jq &> /dev/null; then
-        echo -e "\nError: jq is required but not installed. Please install jq first."
+        log_message "Error: jq is required but not installed. Please install jq first." true true false
         exit 1
     fi
 
-    if [ "$OS_TYPE" == "Windows" ] && ! command -v realpath &> /dev/null; then
-        echo -e "\nError: realpath is required on Windows but not found. Please install it first."
+    if [ "$DETECTED_OS_TYPE" == "Windows" ] && ! command -v realpath &> /dev/null; then
+        log_message "Error: realpath is required but not installed. Please install realpath first." true true false
         exit 1
     fi
 }
 
-# Validate if the project ID exists in the mapping file
 validate_project_id() {
-    if [[ ! "$PROJECT_ID" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-        echo -e "\nError: Invalid project ID '$PROJECT_ID'. Only alphanumeric characters, hyphens, and underscores are allowed."
+    PROJECT_ID_TO_VALIDATE="$1"
+
+    if [[ ! "$PROJECT_ID_TO_VALIDATE" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        log_message "Error: Invalid project ID '$1'. Only alphanumeric characters, hyphens, and underscores are allowed." true true false
         exit 1
     fi
 }
 
-# Validate if the directory exists and if it's already assigned to another project
-validate_directory_unique() {
-    if [[ ! -d "$TARGET_DIR" ]]; then
-        echo -e "\nError: Directory '$TARGET_DIR' not found!"
-        exit 1
-    fi
-
-    # Check if the directory is already assigned to a project
-    if jq -e "to_entries | .[] | select(.value == \"$TARGET_DIR\")" "$PROJECT_MAP_FILE" > /dev/null; then
-        echo -e "\nError: The directory '$TARGET_DIR' is already assigned to another project!"
-        exit 1
-    fi
-}
-
-# Validate the command to ensure it doesn't contain dangerous characters using grep
-sanitize_command() {
-    if echo "$COMMAND" | grep -q '[;&|<>()\$]'; then
-        echo -e "\nError: Command contains potentially dangerous characters (e.g., ; & | < >)."
-        exit 1
-    fi
-    if echo "$COMMAND" | grep -q '[^a-zA-Z0-9\-\_\/\ \=]'; then
-        echo -e "\nError: Command contains invalid characters."
-        exit 1
-    fi
-}
-
-# Validate if the mapping file exists and is accessible
-validate_mapping_file() {
-    if [[ ! -f "$PROJECT_MAP_FILE" ]]; then
-        echo -e "\nError: Project mapping file '$PROJECT_MAP_FILE' not found or not accessible!"
-        exit 1
-    fi
-
-    if ! jq -e . "$PROJECT_MAP_FILE" > /dev/null 2>&1; then
-        echo -e "\nError: Invalid JSON format in '$PROJECT_MAP_FILE'."
-        exit 1
-    fi
-}
-
-# Validate if the project directory exists
 validate_directory() {
-    if [[ ! -d "$TARGET_DIR" ]]; then
-        echo -e "\nError: Project directory '$TARGET_DIR' not found!"
+    PROJECT_DIR_TO_VALIDATE="$1"
+
+    if [[ ! -d "$PROJECT_DIR_TO_VALIDATE" ]]; then
+        log_message "Error: Project directory '$1' not found!" true true false
         exit 1
     fi
 }
 
-# List all projects in the mapping file
-list_projects() {
-    if [[ ! -f "$PROJECT_MAP_FILE" ]]; then
-        echo -e "\nError: Project mapping file '$PROJECT_MAP_FILE' not found or not accessible!"
+validate_directory_unique() {
+    PROJECT_MAPPING_FILE="$1"
+    PROJECT_DIR_TO_VALIDATE="$2"
+
+    validate_directory "$PROJECT_DIR_TO_VALIDATE"
+
+    if jq -e "to_entries | .[] | select(.value == \"$PROJECT_DIR_TO_VALIDATE\")" "$PROJECT_MAPPING_FILE" > /dev/null; then
+        log_message "Error: The directory '$PROJECT_DIR_TO_VALIDATE' is already assigned to another project!" true true false
         exit 1
     fi
-    echo -e "\nHere are all the available projects in '$PROJECT_MAP_FILE':\n"
-    jq -r 'keys[] | "* \(.)"' "$PROJECT_MAP_FILE"
 }
 
-# List all projects with their directories
-list_projects_with_dirs() {
-    if [[ ! -f "$PROJECT_MAP_FILE" ]]; then
-        echo -e "\nError: Project mapping file '$PROJECT_MAP_FILE' not found or not accessible!"
+validate_project_id_unique() {
+    PROJECT_MAPPING_FILE="$1"
+    PROJECT_ID_TO_VALIDATE="$2"
+
+    validate_project_id "$PROJECT_ID_TO_VALIDATE"
+
+    if jq -e ".\"$PROJECT_ID_TO_VALIDATE\"" "$PROJECT_MAPPING_FILE" > /dev/null; then
+        log_message "Error: Project ID '$PROJECT_ID_TO_VALIDATE' already exists!" true true false
         exit 1
     fi
-    echo -e "\nHere are all the available projects with their directories in '$PROJECT_MAP_FILE':\n"
-    jq -r 'to_entries | .[] | "* \(.key) -> \(.value)"' "$PROJECT_MAP_FILE"
 }
 
-# Helper function to normalize the directory path
+sanitize_command() {
+    COMMAND_TO_SANITIZE="$1"
+
+    if echo "$COMMAND_TO_SANITIZE" | grep -q '[;&|<>()\$]'; then
+        log_message "Error: Command contains potentially dangerous characters (e.g., ; & | < >)." true true false
+        exit 1
+    fi
+    if echo "$COMMAND_TO_SANITIZE" | grep -q '[^a-zA-Z0-9\-\_\/\ \=]'; then
+        log_message "Error: Command contains invalid characters." true true false
+        exit 1
+    fi
+}
+
+validate_mapping_file() {
+    PROJECT_MAPPING_FILE="$1"
+
+    if [[ ! -f "$PROJECT_MAPPING_FILE" ]]; then
+        log_message "Info: Looks like you don't have any '$PROJECT_MAPPING_FILE' configured. Please run './mrun.sh init' first." true true false
+        exit 1
+    fi
+
+    if ! jq -e . "$PROJECT_MAPPING_FILE" > /dev/null 2>&1; then
+        log_message "Error: Invalid JSON format in '$PROJECT_MAPPING_FILE'. Please re-configure '$PROJECT_MAPPING_FILE' first." true true false
+        exit 1
+    fi
+}
+
 normalize_directory_path() {
-    # Ensure the path is relative to the current working directory
-    if [[ "$1" == /* ]]; then
-        # If the path starts with '/', make it relative to the root of the project
-        echo "$1" | sed "s|^/||"
+    PATH_TO_CHECK="$1"
+
+    if [[ "$PATH_TO_CHECK" == /* ]]; then
+        echo "$PATH_TO_CHECK" | sed "s|^/||"
     else
-        # Otherwise, it's already relative, so we just return it as-is
-        echo "$1"
+        echo "$PATH_TO_CHECK"
     fi
 }
 
-# Add a new project to the mapping file
-add_project() {
-    echo
+project_file_entries_action() {
+    PROJECT_MAPPING_FILE="$1"
+    FILE_ACTION="$2"
+
+    if [[ $FILE_ACTION == "create" ]]; then
+        # $3 -> NEW_PROJECT_ID
+        # $4 -> NEW_PROJECT_DIR
+        jq --arg id "$3" --arg dir "$4" \
+        '. + {($id): $dir}' "$PROJECT_MAPPING_FILE" > temp.mrun.json && mv temp.mrun.json "$PROJECT_MAPPING_FILE"
+    elif [[ $FILE_ACTION == "read" ]]; then
+        # $3 -> WITH_DIR_ACTION
+        if [[ $3 == "all" ]]; then
+            jq -r 'to_entries | .[] | "* \(.key) -> \(.value)"' "$PROJECT_MAPPING_FILE"
+        else
+            jq -r 'keys[] | "* \(.)"' "$PROJECT_MAPPING_FILE"
+        fi
+    elif [[ $FILE_ACTION == "update" ]]; then
+        # $3 -> UPDATE_FIELD_TYPE
+        if [[ $3 == "id" ]]; then
+            # $4 -> OLD_PROJECT_ID
+            # $5 -> NEW_PROJECT_ID
+            jq --arg old_id "$4" --arg new_id "$5" \
+                'if .[$old_id] then .[$new_id] = .[$old_id] | del(.[$old_id]) else . end' "$PROJECT_MAPPING_FILE" > temp.json && mv temp.json "$PROJECT_MAPPING_FILE"
+        elif [[ $3 == "dir" ]]; then
+            # $4 -> PROJECT_ID
+            # $5 -> NEW_PROJECT_DIR
+            jq --arg id "$4" --arg dir "$5" \
+                '.[$id] = $dir' "$PROJECT_MAPPING_FILE" > temp.mrun.json && mv temp.mrun.json "$PROJECT_MAPPING_FILE"
+        fi
+    elif [[ $FILE_ACTION == "delete" ]]; then
+        # $3 -> PROJECT_ID_TO_DELETE
+        jq "del(.\"$3\")" "$PROJECT_MAPPING_FILE" > temp.mrun.json && mv temp.mrun.json "$PROJECT_MAPPING_FILE"
+    fi
+}
+
+create_project() {
+    PROJECT_MAPPING_FILE="$1"
+
     read -p "Enter the new project ID: " NEW_PROJECT_ID
     check_empty_input "$NEW_PROJECT_ID"
+
+    validate_project_id_unique "$PROJECT_MAPPING_FILE" "$NEW_PROJECT_ID"
+
     read -p "Enter the directory for the new project: " NEW_PROJECT_DIR
     check_empty_input "$NEW_PROJECT_DIR"
 
-    # Normalize the directory to be relative
     NEW_PROJECT_DIR=$(normalize_directory_path "$NEW_PROJECT_DIR")
 
-    # Check if the directory exists
-    if [[ ! -d "$NEW_PROJECT_DIR" ]]; then
-        echo -e "\nError: Directory '$NEW_PROJECT_DIR' not found!"
-        exit 1
-    fi
+    validate_directory_unique "$PROJECT_MAPPING_FILE" "$NEW_PROJECT_DIR"
 
-    # Check if project ID already exists
-    if jq -e ".\"$NEW_PROJECT_ID\"" "$PROJECT_MAP_FILE" > /dev/null; then
-        echo -e "\nError: Project ID '$NEW_PROJECT_ID' already exists!"
-        exit 1
-    fi
-
-    # Validate if the directory is already assigned
-    if jq -e "to_entries | .[] | select(.value == \"$NEW_PROJECT_DIR\")" "$PROJECT_MAP_FILE" > /dev/null; then
-        echo -e "\nError: Directory '$NEW_PROJECT_DIR' is already assigned to another project!"
-        exit 1
-    fi
-
-    # Update the JSON file with the new project
-    jq --arg id "$NEW_PROJECT_ID" --arg dir "$NEW_PROJECT_DIR" \
-        '. + {($id): $dir}' "$PROJECT_MAP_FILE" > temp.json && mv temp.json "$PROJECT_MAP_FILE"
-    echo -e "\nProject '$NEW_PROJECT_ID' added successfully."
+    project_file_entries_action "$PROJECT_MAPPING_FILE" "create" "$NEW_PROJECT_ID" "$NEW_PROJECT_DIR"
+    log_message "Info: Project '$NEW_PROJECT_ID' added successfully." true true false
 }
 
-# Remove a project from the mapping file
-remove_project() {
-    echo
-    read -p "Enter the project ID to remove: " REMOVE_PROJECT_ID
-    check_empty_input "$REMOVE_PROJECT_ID"
+read_projects() {
+    PROJECT_MAPPING_FILE="$1"
 
-    # Check if the project exists
-    if ! jq -e ".\"$REMOVE_PROJECT_ID\"" "$PROJECT_MAP_FILE" > /dev/null; then
-        echo -e "\nError: Project ID '$REMOVE_PROJECT_ID' not found!"
-        exit 1
-    fi
-
-    # Remove the project from the JSON file
-    jq "del(.\"$REMOVE_PROJECT_ID\")" "$PROJECT_MAP_FILE" > temp.json && mv temp.json "$PROJECT_MAP_FILE"
-    echo -e "\nProject '$REMOVE_PROJECT_ID' removed successfully."
+    echo -e "Here are all the available projects in '$PROJECT_MAPPING_FILE':"
+    project_file_entries_action $PROJECT_MAPPING_FILE "read"
 }
 
-# Update the directory of a project in the mapping file
+read_projects_with_dirs() {
+    PROJECT_MAPPING_FILE="$1"
+
+    echo -e "Here are all the available projects with their directories in '$PROJECT_MAPPING_FILE':"
+    project_file_entries_action "$PROJECT_MAPPING_FILE" "read" "all"
+}
+
 update_project() {
-    echo
+    PROJECT_MAPPING_FILE="$1"
+
     read -p "Enter the project ID to update: " UPDATE_PROJECT_ID
     check_empty_input "$UPDATE_PROJECT_ID"
 
-    # Check if the project exists
-    if ! jq -e ".\"$UPDATE_PROJECT_ID\"" "$PROJECT_MAP_FILE" > /dev/null; then
-        echo -e "\nError: Project ID '$UPDATE_PROJECT_ID' not found!"
+    if ! jq -e ".\"$UPDATE_PROJECT_ID\"" "$PROJECT_MAPPING_FILE" > /dev/null; then
+        log_message "Error: Project ID '$UPDATE_PROJECT_ID' not found!" true true false
         exit 1
     fi
 
-    # Prompt for new project ID (optional)
     read -p "Update project ID (leave blank if unchanged): " NEW_PROJECT_ID
     if [[ -n "$NEW_PROJECT_ID" ]]; then
-        # Validate the new project ID
-        if jq -e ".\"$NEW_PROJECT_ID\"" "$PROJECT_MAP_FILE" > /dev/null; then
-            echo -e "\nError: Project ID '$NEW_PROJECT_ID' already exists!"
-            exit 1
-        fi
+        validate_project_id_unique "$PROJECT_MAPPING_FILE" "$NEW_PROJECT_ID"
 
-        # Update the project ID in the mapping file
-        jq --arg old_id "$UPDATE_PROJECT_ID" --arg new_id "$NEW_PROJECT_ID" \
-            'del(.[$old_id]) | .[$new_id] = .[$old_id]' "$PROJECT_MAP_FILE" > temp.json && mv temp.json "$PROJECT_MAP_FILE"
-        echo -e "\nProject ID updated to '$NEW_PROJECT_ID'."
-        UPDATE_PROJECT_ID="$NEW_PROJECT_ID"  # Set the new project ID
+        project_file_entries_action "$PROJECT_MAPPING_FILE" "update" "id" "$UPDATE_PROJECT_ID" "$NEW_PROJECT_ID"
+        log_message "Info: Project ID '$UPDATE_PROJECT_ID' updated to '$NEW_PROJECT_ID'." true false false
+        UPDATE_PROJECT_ID="$NEW_PROJECT_ID"
     fi
 
-    # Prompt for new directory (optional)
     read -p "Update directory (leave blank if unchanged): " UPDATE_PROJECT_DIR
     if [[ -n "$UPDATE_PROJECT_DIR" ]]; then
-        # Normalize the directory to be relative
         UPDATE_PROJECT_DIR=$(normalize_directory_path "$UPDATE_PROJECT_DIR")
 
-        # Check if the new directory exists
-        if [[ ! -d "$UPDATE_PROJECT_DIR" ]]; then
-            echo -e "\nError: Directory '$UPDATE_PROJECT_DIR' not found!"
-            exit 1
-        fi
+        validate_directory_unique "$PROJECT_MAPPING_FILE" "$UPDATE_PROJECT_DIR"
 
-        # Check if the new directory is already assigned to another project
-        if jq -e "to_entries | .[] | select(.value == \"$UPDATE_PROJECT_DIR\")" "$PROJECT_MAP_FILE" > /dev/null; then
-            echo -e "\nError: Directory '$UPDATE_PROJECT_DIR' is already assigned to another project!"
-            exit 1
-        fi
+        project_file_entries_action "$PROJECT_MAPPING_FILE" "update" "dir" "$UPDATE_PROJECT_ID" "$UPDATE_PROJECT_DIR"
 
-        # Update the project's directory in the JSON file
-        jq --arg id "$UPDATE_PROJECT_ID" --arg dir "$UPDATE_PROJECT_DIR" \
-            '.[$id] = $dir' "$PROJECT_MAP_FILE" > temp.json && mv temp.json "$PROJECT_MAP_FILE"
-        echo -e "\nDirectory updated to '$UPDATE_PROJECT_DIR'."
+        log_message "Info: Directory of project ID '$UPDATE_PROJECT_ID' updated to '$UPDATE_PROJECT_DIR'." true false false
     fi
 
     if [[ -z "$NEW_PROJECT_ID" && -z "$UPDATE_PROJECT_DIR" ]]; then
-        echo -e "\nNo changes were made. Nothing to update."
+        log_message "Info: No changes were made. Nothing to update." false true false
     else
-        echo -e "\nProject '$UPDATE_PROJECT_ID' updated successfully."
+        log_message "Info: Updated successfully." false true false
     fi
+}
+
+delete_project() {
+    PROJECT_MAPPING_FILE="$1"
+
+    read -p "Enter the project ID to delete: " DELETE_PROJECT_ID
+    check_empty_input "$DELETE_PROJECT_ID"
+
+    if ! jq -e ".\"$DELETE_PROJECT_ID\"" "$PROJECT_MAPPING_FILE" > /dev/null; then
+        log_message "Error: Project ID '$DELETE_PROJECT_ID' not found!" true true false
+        exit 1
+    fi
+
+    project_file_entries_action $PROJECT_MAPPING_FILE "delete" "$DELETE_PROJECT_ID"
+    log_message "Info: Project ID '$DELETE_PROJECT_ID' deleted successfully." true true false
 }
 
 check_no_projects_configured() {
-    if [[ ! -s "$PROJECT_MAP_FILE" || "$(jq 'length' "$PROJECT_MAP_FILE")" -eq 0 ]]; then
-        return 0
-    else
-        return 1
+    PROJECT_MAPPING_FILE="$1"
+
+    if [[ ! -s "$PROJECT_MAPPING_FILE" || "$(jq 'length' "$PROJECT_MAPPING_FILE")" -eq 0 ]]; then
+        log_message "Info: You need to add at least one project in '$PROJECT_MAPPING_FILE'. Let's do that now." false true false
+        if [[ ! -s "$PROJECT_MAPPING_FILE" || ! $(jq empty "$PROJECT_MAPPING_FILE" 2>/dev/null) ]]; then
+            echo "{}" > "$PROJECT_MAPPING_FILE"
+        fi
+        create_project "$PROJECT_MAPPING_FILE"
     fi
 }
 
-# Initialize $PROJECT_MAP_FILE file if not present
+run_command() {
+    PROJECT_MAPPING_FILE="$1"
+    TYPE_OS="$2"
+    COMMAND_TO_RUN="$3"
+    TARGETED_PROJECT_ID="$4"
+    ITS_DIR="$5"
+
+    if [[ -n "$TARGETED_PROJECT_ID" ]]; then
+        ITS_DIR=$(jq -r ".\"$TARGETED_PROJECT_ID\"" "$PROJECT_MAPPING_FILE")
+
+        if [[ "$ITS_DIR" == "null" || -z "$ITS_DIR" ]]; then
+            log_message "Error: Project ID '$TARGETED_PROJECT_ID' not found in the mapping!" true true false
+            exit 1
+        fi
+    fi
+
+    ITS_DIR_PATH=""
+    if [[ "$TYPE_OS" == "Windows" ]]; then
+        ITS_DIR_PATH=$(cygpath -w "$ITS_DIR")
+    else
+        ITS_DIR_PATH=$(realpath "$ITS_DIR")
+    fi
+
+    validate_directory "$ITS_DIR_PATH"
+
+    log_message "Info: Running command '$COMMAND_TO_RUN' in $TARGETED_PROJECT_ID -> $ITS_DIR" true true false
+    cd "$ITS_DIR" && eval "$COMMAND_TO_RUN"
+
+    EXIT_STATUS=$?
+
+    if [[ $EXIT_STATUS -ne 0 ]]; then
+        log_message "Error: Command '$COMMAND_TO_RUN' failed with status code $EXIT_STATUS." true true false
+        exit $EXIT_STATUS
+    fi
+}
+
 initialize_mapping_file() {
-    if [[ -f "$PROJECT_MAP_FILE" ]]; then
-        echo
-        read -p "Looks like '$PROJECT_MAP_FILE' already exists. Do you want to reinitialize it and remove all project entries? [y/n]: " reinit_choice
+    PROJECT_MAPPING_FILE="$1"
+
+    if [[ -f "$PROJECT_MAPPING_FILE" ]]; then
+        read -p "Looks like '$PROJECT_MAPPING_FILE' already exists. Do you want to reinitialize it and remove all project entries? [y/n]: " reinit_choice
         check_empty_input "$reinit_choice"
         if [[ "$reinit_choice" == "y" || "$reinit_choice" == "Y" ]]; then
-            echo -e "{}" > "$PROJECT_MAP_FILE"
-            echo -e "\n'$PROJECT_MAP_FILE' has been reinitialized."
-            add_project
+            echo -e "{}" > "$PROJECT_MAPPING_FILE"
+            log_message "Info: '$PROJECT_MAPPING_FILE' has been reinitialized." true true false
+            create_project "$PROJECT_MAPPING_FILE"
         else
-            echo -e "\nSkipping reinitialization of '$PROJECT_MAP_FILE'."
+            log_message "Info: Skipping reinitialization of '$PROJECT_MAPPING_FILE'." false true false
         fi
     else
-        echo -e "\n'$PROJECT_MAP_FILE' not found. Initializing it now..."
-        echo -e "{}" > "$PROJECT_MAP_FILE"
-        echo -e "\nNew '$PROJECT_MAP_FILE' file created."
-        add_project
+        log_message "Info: '$PROJECT_MAPPING_FILE' not found. Initializing it now..." false true false
+        echo -e "{}" > "$PROJECT_MAPPING_FILE"
+        log_message "Info: New '$PROJECT_MAPPING_FILE' file created." true true false
+        create_project "$PROJECT_MAPPING_FILE"
     fi
 }
 
-# Main script logic
+detect_os
+
+check_dependencies "$OS_TYPE"
+
 if [[ "$1" == "init" ]]; then
-    initialize_mapping_file
+    initialize_mapping_file "$PROJECT_MAP_FILE"
     exit 0
 fi
 
-if [[ ! -f "$PROJECT_MAP_FILE" ]]; then
-    echo -e "\nLooks like you don't have any '$PROJECT_MAP_FILE' configured. Please run './mrun.sh init' first."
-    exit 1
-fi
+validate_mapping_file "$PROJECT_MAP_FILE"
 
-if check_no_projects_configured; then
-    echo -e "\nYou need to add at least one project in '$PROJECT_MAP_FILE'. Let's do that now.\n"
-    add_project
-fi
+check_no_projects_configured "$PROJECT_MAP_FILE"
 
-# Parse arguments
-while getopts ":p:c:lhdaru:vf" opt; do
+while getopts ":p:c:lhdaru" opt; do
     case ${opt} in
         p)
+            validate_project_id "$OPTARG"
             PROJECT_ID=$OPTARG
             ;;
         c)
+            sanitize_command "$OPTARG"
             COMMAND=$OPTARG
             ;;
+        a)
+            ACTION="create"
+            ;;
         l)
-            list_projects
+            read_projects "$PROJECT_MAP_FILE"
             exit 0
             ;;
         d)
-            list_projects_with_dirs
+            read_projects_with_dirs "$PROJECT_MAP_FILE"
             exit 0
-            ;;
-        a)
-            ACTION="add"
-            ;;
-        r)
-            ACTION="remove"
             ;;
         u)
             ACTION="update"
             ;;
-        v)
-            VERBOSE="true"
-            ;;
-        f)
-            FORCE="true"
+        r)
+            ACTION="delete"
             ;;
         h)
             help_message
@@ -361,77 +413,19 @@ while getopts ":p:c:lhdaru:vf" opt; do
     esac
 done
 
-# Check if both parameters are provided for running the command
 if [[ -z "$PROJECT_ID" || -z "$COMMAND" ]] && [[ -z "$ACTION" ]]; then
     usage
 fi
 
-# Check if jq is installed
-check_dependencies
-
-# Validate the project ID format
-if [[ -n "$PROJECT_ID" ]]; then
-    validate_project_id
-fi
-
-# Check if the mapping file exists and is valid
-validate_mapping_file
-
-# Handle actions
-if [[ "$ACTION" == "add" ]]; then
-    add_project
+if [[ "$ACTION" == "create" ]]; then
+    create_project $PROJECT_MAP_FILE
     exit 0
-elif [[ "$ACTION" == "remove" ]]; then
-    remove_project
+elif [[ "$ACTION" == "delete" ]]; then
+    delete_project $PROJECT_MAP_FILE
     exit 0
 elif [[ "$ACTION" == "update" ]]; then
-    update_project
+    update_project $PROJECT_MAP_FILE
     exit 0
 fi
 
-# Get the project directory from the mapping file using jq
-if [[ -n "$PROJECT_ID" ]]; then
-    PROJECT_DIR=$(jq -r ".\"$PROJECT_ID\"" "$PROJECT_MAP_FILE")
-
-    # Check if the project ID exists in the mapping
-    if [[ "$PROJECT_DIR" == "null" || -z "$PROJECT_DIR" ]]; then
-        echo -e "\nError: Project ID '$PROJECT_ID' not found in the mapping!\n"
-        exit 1
-    fi
-fi
-
-# Resolve the absolute path to the project directory
-TARGET_DIR=""
-if [[ "$OS_TYPE" == "Windows" ]]; then
-    TARGET_DIR=$(cygpath -w "$PROJECT_DIR")
-else
-    TARGET_DIR=$(realpath "$PROJECT_DIR")
-fi
-
-# Validate if the resolved directory exists
-validate_directory
-
-# Function to ensure safe execution of commands in the target directory
-run_command() {
-    echo -e "\nRunning command '$COMMAND' in $PROJECT_ID -> $TARGET_DIR\n"
-    cd "$TARGET_DIR" && eval "$COMMAND"
-
-    # Handle verbosity
-    if [[ "$VERBOSE" == "true" ]]; then
-        echo -e "\nCommand '$COMMAND' executed successfully!"
-    fi
-
-    # Capture the exit status of the command
-    EXIT_STATUS=$?
-
-    if [[ $EXIT_STATUS -ne 0 ]]; then
-        echo -e "\nError: Command '$COMMAND' failed with status code $EXIT_STATUS."
-        exit $EXIT_STATUS
-    fi
-}
-
-# Sanitize and validate the command
-sanitize_command
-
-# Run the command in the target directory
-run_command
+run_command $PROJECT_MAP_FILE $OS_TYPE $COMMAND $PROJECT_ID $TARGET_DIR

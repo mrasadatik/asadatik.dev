@@ -24,10 +24,10 @@ To ensure the security of the **asadatik.dev** repository, I follow a set of bes
 
 Before adding or updating dependencies in the repository, I follow these steps to ensure security:
 
-- **Version Check**: Ensure the dependency version is compatible with the projects in the repository.
-- **Vulnerability Check**: Assess the dependency for known vulnerabilities using trusted security databases.
-- **Project Activity**: Confirm that the dependency is actively maintained and updated.
-- **Quality Assurance**: Evaluate the dependency based on community feedback and performance metrics.
+-   **Version Check**: Ensure the dependency version is compatible with the projects in the repository.
+-   **Vulnerability Check**: Assess the dependency for known vulnerabilities using trusted security databases.
+-   **Project Activity**: Confirm that the dependency is actively maintained and updated.
+-   **Quality Assurance**: Evaluate the dependency based on community feedback and performance metrics.
 
 ### **2.2 GPG Signing for Commits**
 
@@ -43,7 +43,7 @@ I adhere to established secure coding standards and best practices to minimize t
 
 ## **3. Access Control and Monitoring**
 
-Given that the repository is public but only I can contribute to it, it’s important to enforce appropriate access control and monitoring:
+Given that the repository is public but only I can contribute to it, it's important to enforce appropriate access control and monitoring:
 
 ### **3.1 Access Control**
 
