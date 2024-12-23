@@ -1,9 +1,9 @@
 {
-  "name": "mrasadatik",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "workspaces": [
-    "core/portfolio/applications/web/*"
-  ]
+    "name": "mrasadatik",
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "workspaces": [
+        "core/applications/web/**"
+    ]
 }
